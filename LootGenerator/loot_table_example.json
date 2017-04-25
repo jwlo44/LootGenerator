@@ -1,0 +1,97 @@
+[
+    {
+        "TableType" : "Random",
+        "TableName" : "CurrencyTable",
+        "TableEntryCollection" : [
+            {
+                "EntryType" : "Item",
+                "EntryName" : "platinum",
+                "MinDrops" : 1,
+                "MaxDrops" : 10,
+                "SelectionWeight" : 0.25
+            },
+            {
+                "EntryType" : "Item",
+                "EntryName" : "gold",
+                "MinDrops" : 1,
+                "MaxDrops" : 100,
+                "SelectionWeight" : 0.50
+            },
+            {
+                "EntryType" : "Item",
+                "EntryName" : "silver",
+                "MinDrops" : 1,
+                "MaxDrops" : 500,
+                "SelectionWeight" : 0.75
+            },
+            {
+                "EntryType" : "Item",
+                "EntryName" : "copper",
+                "MinDrops" : 1,
+                "MaxDrops" : 1000,
+                "SelectionWeight" : 1.0
+            }
+        ]
+    },
+    {
+        "TableType" : "UniqueRandom",
+        "TableName" : "EquipmentTable",
+        "TableEntryCollection" : [
+            {
+                "EntryType" : "Item",
+                "EntryName" : "IronSword",
+                "MinDrops" : 1,
+                "MaxDrops" : 2,
+                "SelectionWeight" : 1
+            },
+            {
+                "EntryType" : "Item",
+                "EntryName" : "WoodenShield",
+                "MinDrops" : 1,
+                "MaxDrops" : 4,
+                "SelectionWeight" : 2
+            },
+            {
+                "EntryType" : "Item",
+                "EntryName" : "GoldRing",
+                "MinDrops" : 1,
+                "MaxDrops" : 1,
+                "SelectionWeight" : 3
+            },
+            {
+                "EntryType" : "Item",
+                "EntryName" : "SilverRing",
+                "MinDrops" : 1,
+                "MaxDrops" : 3,
+                "SelectionWeight" : 4
+            }
+        ]
+    },
+    {
+        "TableType" : "Random",
+        "TableName" : "TreasureChestTable",
+        "TableEntryCollection" : [
+            {
+                "EntryType" : "Table",
+                "EntryName" : "CurrencyTable",
+                "MinDrops" : 10,
+                "MaxDrops" : 20,
+                "SelectionWeight" : 1
+            },
+            {
+                "EntryType" : "Table",
+                "EntryName" : "EquipmentTable",
+                "MinDrops" : 1,
+                "MaxDrops" : 5,
+                "SelectionWeight" : 1
+            },
+            {
+                "EntryType" : "Item",
+                "EntryName" : "diamonds",
+                "MinDrops" : 1,
+                "MaxDrops" : 5,
+                "SelectionWeight" : 1
+            }
+        ]
+    }
+]
