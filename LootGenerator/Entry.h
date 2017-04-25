@@ -13,6 +13,12 @@ bool jsonContainsNumber(const nlohmann::json& json, const std::string& key);
 
 class LootTable;
 
+// a structure for holding generated loot
+using LootDrops = std::unordered_map<std::string, unsigned int>&;
+
+// a structure for a lookup of LootTables
+using LootTableLookupRef = const std::unordered_map<std::string, std::shared_ptr<LootTable>>&;
+
 // an abstract entry in a loot table. generates loot.
 class Entry
 {
@@ -34,12 +40,15 @@ public:
 	// generates loot from this table
 	virtual void GenerateLoot(
 		std::default_random_engine& random,
-		std::unordered_map<std::string, std::shared_ptr<LootTable>> LootTableLookup,
-		std::unordered_map<std::string, unsigned int>& outLoot) const = 0;
+		LootTableLookupRef LootTableLookup,
+		LootDrops outLoot) const = 0;
 
 	// figures out if the json is an ItemEntry or TableEntry
 	// returns shared ptr to parsed entry or nullptr if there was a parsing error
 	static ptr ParseEntryType(const nlohmann::json& json);
+
+	// generate a random number in the range
+	unsigned int GenerateNumDrops(std::default_random_engine& random) const;
 
 	// constructs an Entry from json. sets isError to true if there was a parsing error
 	Entry(const nlohmann::json& json, bool& isError);
@@ -53,8 +62,8 @@ public:
 	TableEntry(const nlohmann::json& json, bool& isError);
 	virtual void GenerateLoot(
 		std::default_random_engine& random,
-		std::unordered_map<std::string, std::shared_ptr<LootTable>> LootTableLookup,
-		std::unordered_map<std::string, unsigned int>& outLoot) const override;
+		LootTableLookupRef LootTableLookup,
+		LootDrops outLoot) const override;
 };
 
 // an entry that generates a single kind of loot
@@ -64,6 +73,6 @@ public:
 	ItemEntry(const nlohmann::json& json, bool& isError);
 	virtual void GenerateLoot(
 		std::default_random_engine& random,
-		std::unordered_map<std::string, std::shared_ptr<LootTable>> LootTableLookup,
-		std::unordered_map<std::string, unsigned int>& outLoot) const override;
+		LootTableLookupRef LootTableLookup,
+		LootDrops outLoot) const override;
 };

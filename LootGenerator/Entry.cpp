@@ -74,25 +74,33 @@ TableEntry::TableEntry(const nlohmann::json& json, bool& isError) : Entry(json, 
 
 void ItemEntry::GenerateLoot(
 	std::default_random_engine& random,
-	std::unordered_map<std::string, std::shared_ptr<LootTable>> LootTableLookup,
-	std::unordered_map<std::string, unsigned int>& outLoot) const
+	LootTableLookupRef LootTableLookup,
+	LootDrops outLoot) const
 {
-	// generate a random number in the range
-	std::uniform_int_distribution<int> uni(MinDrops, MaxDrops); 
-	int amountToDrop = uni(random);
-
+	int amountToDrop = GenerateNumDrops(random);
 	// update the map with the generated loot
+	// if the loot type doesn't exist in the map yet, its value will default to 0
 	outLoot[EntryName] += amountToDrop;
 }
 
 void TableEntry::GenerateLoot(
 	std::default_random_engine& random,
-	std::unordered_map<std::string, std::shared_ptr<LootTable>> LootTableLookup,
-	std::unordered_map<std::string, unsigned int>& outLoot) const
+	LootTableLookupRef LootTableLookup,
+	LootDrops outLoot) const
 {
-	//TOD generate a count boiiii
-
+	unsigned int count = GenerateNumDrops(random);
 	// lookup our loot table
-	// tell it to make loot
-	//LootTableLookup[EntryName]->GenerateLoot(random, );
+	if (LootTableLookup.find(EntryName) == LootTableLookup.end())
+	{
+		// TODO: scream
+		return;
+	}
+	LootTable::ptr lootTable = LootTableLookup.at(EntryName);
+	lootTable->GenerateLoot(random, LootTableLookup, outLoot, count);
+}
+
+unsigned int Entry::GenerateNumDrops(std::default_random_engine& random) const
+{
+	std::uniform_int_distribution<int> uni(MinDrops, MaxDrops);
+	return uni(random);
 }

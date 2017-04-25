@@ -44,6 +44,7 @@ void printTables(const std::unordered_map<std::string, LootTable::ptr>& lootTabl
 	}
 }
 
+
 int main()
 {
 	std::cout << "Parsing loot table data from " << lootDataFilename << ".\n\n";
@@ -64,7 +65,7 @@ int main()
 		return 2;
 	}
 
-	std::unordered_map<std::string, LootTable::ptr> lootTableLookup;
+	std::unordered_map<std::string, std::shared_ptr<LootTable>> lootTableLookup;
 
 	// parse json into array of LootTable
 	for (const nlohmann::json& lootTable : lootTables)
@@ -84,28 +85,25 @@ int main()
 	// give the user some instructions!
 	printHelp();
 
+	// set up rng
+	std::default_random_engine random;
+
 	// user input loop
 	while (true)
 	{
-		// get string input
 		std::string input;
 		std::getline(std::cin, input);
 
-
-		// end the program when the user types exit
+		// special cases for command input
 		if (input == "exit")
 		{
 			return 0;
 		}
-
-		// check if the user typed help
 		if (input == "help")
 		{
 			printHelp();
 			continue;
 		}
-
-		// check if the user wants to list the tables
 		if (input == "tables")
 		{
 			printTables(lootTableLookup);
@@ -117,7 +115,6 @@ int main()
 		std::string lootTableStr = input.substr(0,indexOfSpace);
 		std::string countStr = input.substr(indexOfSpace + 1);
 
-		// check if the table is in lookup
 		if (lootTableLookup.find(lootTableStr)  == lootTableLookup.end())
 		{
 			// lootTable not found in data
@@ -128,16 +125,13 @@ int main()
 		// try parse count
 		std::stringstream convertor;
 		int count; 
-
 		convertor << countStr;
 		convertor >> count;
-		
 		if (convertor.fail() || !convertor.eof())
 		{
 			std::cout << "Could not parse count as an integer. Input: " << countStr << "\n";
 			continue;
 		}
-
 		if (count < 0)
 		{
 			std::cout << "Cannot generate negative amounts of loot. Input: " << countStr << "\n";
@@ -145,13 +139,13 @@ int main()
 		}
 
 		// GENERATE LOOT
-		std::unordered_map<std::string, LootTable::ptr> result;
-		auto generatedLoot = lootTableLookup[lootTableStr]->GenerateLoot(random, count, result, lootTableLookup);
+		std::unordered_map<std::string, unsigned int> result;
+	    lootTableLookup[lootTableStr]->GenerateLoot(random, lootTableLookup, result, count);
 
 		// print it
-		for (auto kvp : generatedLoot)
+		for (auto kvp : result)
 		{
-			std::cout << "Generated " << kvp.second << " " << kvp.first;
+			std::cout << "Generated " << kvp.second << " " << kvp.first << ".\n";
 		}
 	}
 }

@@ -15,11 +15,17 @@ public:
 	// the key used by TableEntries to look up this LootTable
 	std::string TableName;
 	// a collection of one or more TableEntries
-	std::vector<Entry::ptr> TableEntryCollection;
+	std::vector<Entry::ptr> Entries;
 
 	// generates loot from this table a given number of times
-	virtual void GenerateLoot(std::default_random_engine& random, int count, std::unordered_map<std::string, unsigned int> outLoot) const = 0;
+	virtual void GenerateLoot(
+		std::default_random_engine& random,
+		LootTableLookupRef LootTableLookup,
+		LootDrops outLoot,
+		unsigned int count) const = 0;
 
+	// picks a random entry from the given vector
+	static unsigned int PickRandomIndex(std::default_random_engine& random, const std::vector<Entry::ptr>& entries);
 	// determines if the json is a UniqueRandom or Random LootTable
 	// returns a shared ptr to the parsed LootTable or nullptr if there was a parsing error
 	static ptr ParseTableType(const nlohmann::json& json);
@@ -35,7 +41,11 @@ public:
 class RandomLootTable : public LootTable
 {
 public:
-	virtual void GenerateLoot(std::default_random_engine& random, int count, std::unordered_map<std::string, unsigned int> outLoot) const override;
+	virtual void GenerateLoot(
+		std::default_random_engine& random,
+		LootTableLookupRef LootTableLookup,
+		LootDrops outLoot,
+		unsigned int count) const override;
 	RandomLootTable(const nlohmann::json& json, bool& isError);
 };
 
@@ -43,6 +53,10 @@ public:
 class UniqueRandomLootTable : public LootTable
 {
 public:
-	virtual void  GenerateLoot(std::default_random_engine& random, int count, std::unordered_map<std::string, unsigned int> outLoot) const override;
+	virtual void  GenerateLoot(
+		std::default_random_engine& random,
+		LootTableLookupRef LootTableLookup,
+		LootDrops outLoot,
+		unsigned int count) const override;
 	UniqueRandomLootTable(const nlohmann::json& json, bool& isError);
 };
