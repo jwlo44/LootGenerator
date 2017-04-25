@@ -1,0 +1,2 @@
+# LootGenerator
+generates loot!
